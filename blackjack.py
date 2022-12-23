@@ -14,11 +14,14 @@ randodealer2 = 0
 decision = 0
 bet1 = 0
 
+# Lists declaring deck of cards
 clubs = [2,3,4,5,6,7,8,9,10, 'J', 'Q', 'K', 'As']
 diamonds = [2,3,4,5,6,7,8,9,10, 'J', 'Q', 'K', 'As']
 hearts = [2,3,4,5,6,7,8,9,10, 'J', 'Q', 'K', 'As']
 spades = [2,3,4,5,6,7,8,9,10, 'J', 'Q', 'K', 'As']
 
+#class player with name, cash and bet variables. Also has a method that saves the bet as a variable and substract it from the entrance fee
+#inserted by the player
 class Player:
     def __init__(self, name, cash):
         self.name = name
@@ -32,7 +35,11 @@ class Player:
         print('Cash left ${cash}\n'.format(cash = self.cash))
 
 
-
+#function with one argument that will return a card depending on the argument which is random between 0 to 3, if 0 a random card will be chosen from clubs
+#1 diamonds, 2 hearts and 3 spades. 
+#a variable will store a random number from 0 to the length of the suit list, that number will be the index of the card in the specific suit
+#it prints which is the card selected and then the card is removed from the list, for the cards that arent int, and if statement will 
+#return the specific value
 def card1(number):
     if number == 0:
         rando_card1 = random.randint(0,len(clubs)-1)
@@ -322,6 +329,8 @@ def dealer2(number):
             value = 10
         return value
 
+# function o evaluate an as card, it will ask if the player wants to use the card as a 1 or 11. dependeding on the answer, the function will 
+#return the value the player chose
 def as_card():    
     print('As can be used as a 1 or 11')
     time.sleep(0.5)
@@ -333,6 +342,7 @@ def as_card():
         value_card = 11
     return value_card
 
+#function used by the dealer to randomly use the as card as a 1 or 11
 def as_card_dealer():
     rando = random.randint(0,1)
     if rando == 0:
@@ -341,6 +351,8 @@ def as_card_dealer():
         value_card = 11
     return value_card
 
+#function that starts asks the custome to input the bet, minimum was declared $10, if below it will loop until the bet is greater or equal to 10
+# the function also uses a class method from the player to substract the bet from the entrance fee
 def start():
     print('Please enter your bet (min $10)\n')
     bet1= int(input())
@@ -354,6 +366,7 @@ def start():
     print('Dealer is shuffling your cards...\n')  
     time.sleep(3) 
 
+#function to pick a card from the deck, variable with a random number between 0 to 3 for the suits
 def start_card1():
     randosuit1 = random.randint(0,3)
     card = card1(randosuit1)
@@ -388,47 +401,47 @@ time.sleep(1)
 print('Please enter entrance fee (min $100)\n')
 entrance_input = int(input())
 time.sleep(1)
-while entrance_input < 100:
+while entrance_input < 100: #loop expecting an entrance fee greater or equal to $100    
     print('\nEntrance fee below minimum\nPlease enter entrance fee (min $100)\n')
     entrance_input = int(input())
     time.sleep(1)
 time.sleep(1)
-player1 = Player(name_input, entrance_input)
+player1 = Player(name_input, entrance_input) #player1 variable declaring Player class with name and entrance fee variables
 print('\nWelcome {player}\n'.format(player = player1.name))
 time.sleep(1)
 
-start()
+start() 
 player1_card = start_card1()
 player1_card2 = start_card2()
 dealer1_card = start_dealer1()
 randodealer2 = start_dealer2()
 
-while True:  
+while True:  #a while loop to repeat the game over and over until the player cashes out
     print('Would you like to stay or get one more card?')
     time.sleep(1)
     print('Enter a 1 to stay or a 2 for an extra card\n')
-    decision = int(input())
+    decision = int(input()) #input from the player deciding to stay or get one more card
     print('\n')
     time.sleep(0.5)
-    if decision == 1:
-        dealer1_card2 = dealer2(randodealer2)  
+    if decision == 1: #stay part of the code
+        dealer1_card2 = dealer2(randodealer2)  #second dealer's card is shown
         time.sleep(1)
-        if player1_card  == 'As':
+        if player1_card  == 'As': #if statements to check As cards and return the int value depending on the player choice
             player1_card = as_card()
         if player1_card2 == 'As':
             player1_card2 = as_card()
-        player_total = player1_card + player1_card2 + player1_extras
+        player_total = player1_card + player1_card2 + player1_extras #sum of the first two cards, extras is the sum of the extra cards the player gets
         print('\nPlayer 1 sum is {total}\n'.format(total = player_total))
         time.sleep(2)
-        if dealer1_card == 'As':
+        if dealer1_card == 'As': #As check
             dealer1_card = as_card_dealer()
             time.sleep(2)
         if dealer1_card2 == 'As':
             dealer1_card2 = as_card_dealer()
             time.sleep(2)
         dealer_total = dealer1_card + dealer1_card2 + dealer1_extras
-        while dealer_total <= player_total:
-            if dealer_total == player_total:
+        while dealer_total <= player_total: #While statement to keep picking cards if player sum is greater or equal than the dealer's
+            if dealer_total == player_total: #If sum is equal to the player's stop picking more cards
                 break
             else:
                 randodealer3 = start_dealer2()
@@ -441,27 +454,27 @@ while True:
                 dealer_total = dealer1_card + dealer1_card2 + dealer1_extras
         print('Dealer sum is {dealer}\n'.format(dealer = dealer_total))
         time.sleep(2)
-        if dealer_total > player_total:
+        if dealer_total > player_total: #If statements to check who the winner is if the dealer's total is greater than the player's
             if dealer_total <= 21:
-                print('The Dealer is the WINNER!!!\n')
+                print('The Dealer is the WINNER!!!\n') #if the dealer's sum is less than 21 but greater than the player´s, dealer is the winner
             else:
-                print('The Player is the WINNER!!!\n')
-                earned = player1.betx * 2
-                player1.cash += earned
+                print('The Player is the WINNER!!!\n') #if the dealer's sum is greater than 21 and greater than player's, the player is the winner if sum is below 21
+                earned = player1.betx * 2 # earning is class bet variable times 2
+                player1.cash += earned #earnings added to the class variable cash
                 print('You earned ${earned}, cash available is ${cash}\n'.format(earned = earned, cash = player1.cash))
         if player_total > dealer_total:
-            if player_total <= 21:
+            if player_total <= 21: #If player's sum is greater than dealer's and below 21, the player is the winner
                 print('The Player is the WINNER!!!\n')
                 earned = player1.betx  *2
                 player1.cash += earned
                 print('You earned ${earned}, cash available is ${cash}\n'.format(earned = earned, cash = player1.cash))
             else:
-                print('The Dealer is the WINNER!!!\n')
+                print('The Dealer is the WINNER!!!\n') #if player's sum is greater than 21, dealer is the winner if sum is below 21
         if player_total == dealer_total:
-            print('No winner this time!!!\n')
+            print('No winner this time!!!\n') #both sums are equal 
             time.sleep(2)
-            player1.cash += player1.betx
-            print('Current cash is {cash}'.format(cash = player1.cash))
+            player1.cash += player1.betx #bet is sum back to the player class variable
+            print('Current cash is {cash}'.format(cash = player1.cash)) #prints the current cash of the player available to bet
         time.sleep(2)        
         print('Would you like to play again or cash out?\n')
         time.sleep(2)
@@ -469,51 +482,48 @@ while True:
         print('Enter 1 to play again or 2 to cash out\n')
         play = int(input())
         print('\n')
-        if play == 1:
+        if play == 1: #decision to play again
             start()
-            player1_card = start_card1()
+            player1_card = start_card1() #start function and first two player's cards and dealer's are picked, dealer's second random number two 
             player1_card2 = start_card2()
             dealer1_card = start_dealer1()
             randodealer2 = start_dealer2()
-            player_total = 0
+            player_total = 0 #player's and dealer's sum totals are equalled to 0 for new game
             dealer_total = 0
             player1_extras = 0
             dealer1_extras = 0
             dealer1_extra = 0
             player1_extra = 0
-
             pass
 
-        elif play == 2:
+        elif play == 2: #cash out option
             print('Thank you for playing with us, good luck {player}\n'.format(player = player1.name))
             time.sleep(2)
             print('You still have in your digital wallet ${cash}'.format(cash = player1.cash))
-            exit()    
+            exit()    #ends the game
 
 
-    elif decision == 2:
-        player_total = 0
-        dealer_total = 0
+    elif decision == 2: #decision to pick new card
         randosuit_extra = random.randint(0,3)
-        player1_extra = extra_card(randosuit_extra)
+        player1_extra = extra_card(randosuit_extra) #picks extra card
         print('\n')
         time.sleep(2)
-        if player1_extra == 'As':
+        if player1_extra == 'As': #checks for as card
             player1_extra = as_card()
         ('\n')
-        dealer1_extra = dealer2(randodealer2)
+        dealer1_extra = dealer2(randodealer2) #extra card from dealer is picked
         time.sleep(2)
-        if dealer1_extra == 'As':
+        if dealer1_extra == 'As': #checks for as card
             dealer1_extra = as_card_dealer()
-        player1_extras += player1_extra
+        player1_extras += player1_extra #sums extra cards picked for the player, then extra cards are added to the first two cards picked
         dealer1_extras += dealer1_extra
-        if player1_card  == 'As':
+        if player1_card  == 'As': 
             player1_card = as_card()
         if player1_card2 == 'As':
             player1_card2 = as_card()
         player_total = player1_card + player1_card2 + player1_extras
-        if player_total > 21:
-            print('Sum is over 21, you lose, computer is the WINNER!!!')
+        if player_total > 21: #checks if the sum total is over 21, if it is player loses and has the choice for a new game or end it
+            print('Sum is over 21, you lose, dealer is the WINNER!!!')
             time.sleep(2)
             print('Would you like to play again or cash out?\n')
             time.sleep(2)
@@ -549,7 +559,7 @@ while True:
             time.sleep(2)
         dealer_total = dealer1_card + dealer1_card2 + dealer1_extras
         if dealer_total > 21:
-            print('Sum is over 21, computer loses, player is the WINNER!!!')
+            print('Sum is over 21, dealer loses, player is the WINNER!!!')
             time.sleep(2)
             earned = player1.betx  * 2
             player1.cash += earned
